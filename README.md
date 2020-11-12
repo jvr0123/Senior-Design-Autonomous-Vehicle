@@ -2,21 +2,19 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
+* [TODO](#TODO)
 
 ## General info
-This project is our design for EECS 159A at the University of California, Irvine. 
+This project is our submission for EECS 159A at the University of California, Irvine. 
+
+As the project progresses more will be added here.
 	
 ## Technologies
 Project is created with:
-* Lorem version: 12.3
-* Ipsum version: 2.33
-* Ament library version: 999
+* wxWidgets: 3.1.4
+* OpenCV: 4.5.0
+* Tensorflow 2.3
 	
 ## Setup
-To run this project, install it locally using npm:
-
-```
-$ cd ../lorem
-$ npm install
-$ npm start
-```
+TODO
+## TODO
