@@ -1,20 +1,22 @@
-
 import sys
+
 import cv2
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import  QWidget, QLabel, QApplication
-from PyQt5.QtCore import *
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
-import qimage2ndarray
+
+from Client.VideoThread import VideoThread
+
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Control")
+    # UI
+    def __init__(self):
+        super(Ui_MainWindow, self).__init__()
+        MainWindow.setObjectName("Controller")
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        # create the label that holds camera feed
         self.feed = QtWidgets.QLabel(self.centralwidget)
         self.feed.setGeometry(QtCore.QRect(306, 130, 481, 411))
         self.feed.setFrameShape(QtWidgets.QFrame.Box)
@@ -40,9 +42,12 @@ class Ui_MainWindow(object):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.toggleCamera.sizePolicy().hasHeightForWidth())
+
         self.toggleCamera.setSizePolicy(sizePolicy)
         self.toggleCamera.setObjectName("toggleCamera")
+        self.toggleCamera.setCheckable(True)
         self.verticalLayout.addWidget(self.toggleCamera)
+
         self.toggleCollisionAvoidance = QtWidgets.QPushButton(self.verticalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -83,12 +88,25 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        #create timer object for async opencv call
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.clickedToggleCamera)
+        # connect buttons
+
         self.toggleCamera.clicked.connect(self.clickedToggleCamera)
 
-        #self.actionQuit.triggered.connect(sys.exit())
+    def update_image(self, cv_img):
+        # Updates the image_label with a new opencv image
+        qt_img = self.convert_cv_qt(cv_img)
+        self.feed.setPixmap(qt_img)
+
+    def convert_cv_qt(self, cv_img):
+        # Convert from an opencv image to QPixmap
+        rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        convert_to_Qt_format = QtGui.QImage(rgb_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
+        p = convert_to_Qt_format.scaled(481, 411, Qt.KeepAspectRatio)
+        return QPixmap.fromImage(p)
+
+        # self.actionQuit.triggered.connect(sys.exit())
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -103,35 +121,27 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
 
     def clickedToggleCamera(self):
-        ret, frame = cap.read()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = qimage2ndarray.array2qimage(frame)
-        self.startTimer()
-        self.feed.setPixmap(QPixmap.fromImage(image))
+        if self.toggleCamera.isChecked():
+            self.thread = VideoThread()
+            self.thread.change_pixmap_signal.connect(self.update_image)
+            self.thread.start()
+        else:
+            self.thread.change_pixmap_signal.disconnect()
+            self.feed.clear()
 
-    def startTimer(self):
-        self.timer.start(60)
+    def closeEvent(self, event):
+        self.thread.stop()
+        event.accept()
 
-    def endTimer(self):
-        self.timer.stop()
-        cv2.destroyAllWindows()
-
-    #def wPressEvent(self, event):
+    # def wPressEvent(self, event):
+    #     #only allowed to move if camera is on
+    #     if self.toggleCamera.isChecked():
+    #         od stuff
 
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 481)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 411)
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
     MainWindow.show()
-    #timer = QTimer()
-    #timer.timeout.connect(ui.clickedToggleCamera)
-    #timer.start(60)
     sys.exit(app.exec_())
-
-
