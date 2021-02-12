@@ -76,10 +76,9 @@ while (True):
     cv2.imshow('frame', frame)
     keyPress = cv2.waitKey(20)
     if keyPress & 0xFF == ord('w'):
-        #forward(.03)
-        pass
+        forward(.03)
+
     elif keyPress & 0xFF == ord('s'):
-        #reverse(.03)
-        pass
+        reverse(.03)
     elif keyPress & 0xFF == ord('q'):
         break
