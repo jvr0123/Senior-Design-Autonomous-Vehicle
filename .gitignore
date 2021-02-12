@@ -151,7 +151,7 @@ AutoTest.Net/
 # Web workbench (sass)
 .sass-cache/
 
-# Installshield output folder
+# Installshield output images
 [Ee]xpress/
 
 # DocProject is a documentation generator add-in
@@ -182,7 +182,7 @@ PublishScripts/
 
 # NuGet Packages
 *.nupkg
-# The packages folder can be ignored because of Package Restore
+# The packages images can be ignored because of Package Restore
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
 !**/[Pp]ackages/build/
@@ -330,7 +330,7 @@ ASALocalRun/
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 
-# MFractors (Xamarin productivity tool) working folder
+# MFractors (Xamarin productivity tool) working images
 .mfractor/
 
 # Local History for Visual Studio

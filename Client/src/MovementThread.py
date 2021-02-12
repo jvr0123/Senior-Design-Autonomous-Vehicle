@@ -3,7 +3,7 @@ import gpiozero as gpio
 import pigpio
 from PyQt5.QtCore import QThread
 
-pi = pigpio.pi()
+pi = pigpio.pi(host = '192.168.1.204')
 
 class MovementThread(QThread):
     def __init__(self):
@@ -40,34 +40,7 @@ class MovementThread(QThread):
             pi.write(24, 1)
             time.sleep(sec)
 
-        def turnRight(sec):
-            servo1 = init(True)
-            global duty
-            if duty >= 2.6:
-                duty = duty - 2.6
-            servo1.ChangeDutyCycle(duty)
-            time.sleep(sec)
-            servo1.stop()
-            gpio.cleanup()
 
-        def turnLeft(sec):
-            servo1 = init(True)
-            global duty
-            if duty <= 9.4:
-                duty = duty + 2.6
-            servo1.ChangeDutyCycle(duty)
-            time.sleep(sec)
-            servo1.stop()
-            gpio.cleanup()
-
-        def center(sec):
-            servo1 = init(True)
-            global duty
-            duty = 6
-            servo1.ChangeDutyCycle(duty)
-            time.sleep(sec)
-            servo1.stop()
-            gpio.cleanup()
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
