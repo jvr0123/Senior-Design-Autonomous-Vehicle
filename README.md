@@ -19,4 +19,4 @@ The frameworks we are using:
 In addition, a Raspberry Pi 4 B+ with 8GB of ram is functioning 
 as our controller onboard the car along with a compatible camera module.
 ## Setup
-The Pi is loaded with the python file control.py. It is then accessed remotely and controlled by a client run on a desktop that cas connected to the pi.
+The Pi is loaded with the python file control.py. It is then accessed remotely and controlled by a client run on a desktop that cas connected to the pi. The remote functionality makes use of the socket library, which allows our software to make calls to the Berkeley Sockets API.
